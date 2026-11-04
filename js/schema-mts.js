@@ -1,0 +1,32 @@
+/* Skema form. Kolom di spreadsheet = nama field (k). Tambah/ubah field cukup di sini. */
+(function () {
+  const Y = ['Iya', 'Tidak'], N = n => Array.from({length: n}, (_, i) => String(i + 1));
+  // f(key, label, tipe, opsi, opsional) tipe: t teks, e email, d tanggal, n angka(opsi=jumlah digit), p telp, s pilihan, r radio, x area, f file, c centang
+  const f = (k, l, t, o, opt) => ({k, l, t: t || 't', o, opt}), yn = (k, l) => f(k, l, 'r', Y);
+  const JOB = ['Tidak Bekerja','Pensiunan','PNS','TNI/Polisi','Guru/Dosen','Pegawai Swasta','Wiraswasta','Pengacara/Jaksa/Hakim/Notaris','Seniman/Pelukis/Artis/Sejenis','Dokter/Bidan/Perawat','Pilot/Pramugara','Pedagang','Petani/Peternak','Nelayan','Buruh (Tani/Pabrik/Bangunan)','Sopir/Masinis/Kondektur','Politikus','Lainnya'];
+  const EDU = ['SD/Sederajat','SMP/Sederajat','SMA/Sederajat','D1','D2','D3','D4/S1','S2','S3','Tidak Bersekolah'];
+  const INC = ['Di bawah Rp800.000','Rp800.000–Rp1.200.000','Rp1.200.000–Rp1.800.000','Rp1.800.000–Rp2.500.000','Rp2.500.000–Rp3.500.000','Rp3.500.000–Rp5.000.000','Rp5.000.000–Rp7.500.000','Rp7.500.000–Rp10.000.000','Rp10.000.000–Rp15.000.000','Di atas Rp15.000.000'];
+  const HID = ['Masih hidup', 'Sudah meninggal', 'Tidak diketahui'];
+  const P = (w, s, req) => [f('nik_' + w, 'No. KTP/NIK ' + s, 'n', 16), f('tl_' + w, 'Tempat lahir ' + s), f('tgl_' + w, 'Tanggal lahir ' + s, 'd'), f('kerja_' + w, 'Pekerjaan ' + s, 's', JOB), f('pend_' + w, 'Pendidikan terakhir ' + s, 's', EDU), f('hasil_' + w, 'Penghasilan ' + s + ' per bulan', 's', INC), f('hp_' + w, 'No. HP ' + s, 'p', 0, !req)];
+  const alive = k => d => d[k] === 'Masih hidup';
+
+  window.SCHEMA = { title: 'Formulir Pendaftaran Siswa/Santri MTs YAPIKA Petanahan', sections: [
+    {t: 'Informasi Pendaftaran', f: [f('email', 'Email address', 'e'), f('kelas', 'Pilihan kelas MTs', 'r', ['Reguler', 'Kompetisi']), f('jenis', 'Jenis pendaftaran', 'r', ['Siswa baru', 'Pindahan'])]},
+    {t: 'Identitas Sekolah Sebelumnya (Pindahan)', show: d => d.jenis === 'Pindahan', f: [f('sekolah_lama', 'Nama sekolah/madrasah sebelumnya'), f('kelas_lama', 'Duduk di kelas', 's', ['7', '8', '9'])]},
+    {t: 'Identitas Diri Siswa', f: [f('nama', 'Nama lengkap siswa'), f('tempat_lahir', 'Tempat lahir siswa'), f('tgl_lahir', 'Tanggal lahir siswa', 'd'), f('jk', 'Jenis kelamin', 'r', ['Laki-laki', 'Perempuan']), f('anak_ke', 'Anak ke-', 's', N(10)), f('jml_saudara', 'Jumlah saudara', 's', N(10)), f('status_anak', 'Status anak (dari sudut pandang ayah)', 's', ['Kandung', 'Tiri', 'Asuh', 'Lainnya']), f('hobi', 'Hobi', 's', ['Olahraga', 'Kesenian', 'Membaca', 'Menulis', 'Jalan-jalan', 'Lainnya']), f('cita', 'Cita-cita', 's', ['PNS', 'TNI/Polri', 'Guru/Dosen', 'Dokter', 'Politikus', 'Wiraswasta', 'Seniman/Artis', 'Ilmuwan', 'Agamawan', 'Lainnya']), f('nik', 'NIK siswa', 'n', 16), f('nisn', 'NISN (jika tidak tahu, cek di nisn.data.kemendikdasmen.go.id)', 'n', 10), f('asal', 'Asal sekolah', 'r', ['SD', 'MI']), f('nama_asal', 'Nama asal sekolah/madrasah'), f('alamat_asal', 'Alamat sekolah/madrasah asal (desa, kecamatan, kabupaten)'), f('npsn', 'NPSN (jika tidak tahu, cari di Google: NPSN [nama sekolah])', 'n', 0), yn('paud', 'Pernah PAUD'), yn('tk', 'Pernah TK/RA'), yn('vk_hepb', 'Vaksin Hepatitis B'), yn('vk_polio', 'Vaksin Polio'), yn('vk_bcg', 'Vaksin BCG'), yn('vk_campak', 'Vaksin Campak'), yn('vk_dpt', 'Vaksin DPT')]},
+    {t: 'Alamat & Tempat Tinggal Siswa', f: [f('tinggal', 'Status tempat tinggal siswa', 's', ['Tinggal dengan orang tua', 'Tinggal dengan wali', 'Tinggal dengan saudara/kerabat', 'Kost/kontrak']), f('alamat', 'Alamat tempat tinggal (dusun, RT/RW atau nama jalan; jangan tulis desa/kecamatan/kabupaten)'), f('desa', 'Desa'), f('kec', 'Kecamatan'), f('kab', 'Kabupaten'), f('prov', 'Provinsi'), f('kodepos', 'Kode pos', 'n', 0), f('hp', 'Nomor HP (yang bisa dihubungi)', 'p'), yn('bansos', 'Memiliki kartu bantuan sosial KIP/PKH/KKS?')]},
+    {t: 'Identitas Bantuan Sosial', show: d => d.bansos === 'Iya', f: [f('no_kip', 'Nomor KIP (jika memiliki)', 't', 0, 1), f('no_pkh', 'Nomor kartu PKH (jika memiliki)', 't', 0, 1), f('no_kks', 'Nomor kartu KKS/KPS (jika memiliki)', 't', 0, 1)]},
+    {t: 'Prestasi Siswa', f: [yn('juara', 'Pernahkah mendapatkan juara lomba?')]},
+    {t: 'Detail Prestasi Lomba (pilih tingkat tertinggi)', show: d => d.juara === 'Iya', f: [f('lomba', 'Nama kompetisi/lomba/event'), f('tingkat', 'Tingkat prestasi', 's', ['Kecamatan', 'Kabupaten', 'Provinsi', 'Nasional']), f('peringkat', 'Juara', 's', ['Juara 1', 'Juara 2', 'Juara 3', 'Harapan 1', 'Harapan 2', 'Harapan 3']), f('waktu_lomba', 'Waktu'), f('sertifikat', 'Upload sertifikat/piagam (PDF atau gambar)', 'f')]},
+    {t: 'Data Keluarga & Ayah', f: [f('rumah', 'Status rumah yang dimiliki', 's', ['Milik sendiri', 'Rumah orang tua', 'Rumah saudara/kerabat', 'Rumah dinas', 'Sewa/kontrak', 'Lainnya']), f('no_kk', 'Nomor Kartu Keluarga (KK)', 'n', 16), f('kepala_kk', 'Nama kepala keluarga'), f('ayah', 'Nama ayah kandung'), f('status_ayah', 'Status ayah kandung', 'r', HID)]},
+    {t: 'Identitas Ayah Kandung', show: alive('status_ayah'), f: P('ayah', 'ayah')},
+    {t: 'Data Ibu Kandung', f: [f('ibu', 'Nama ibu kandung'), f('status_ibu', 'Status ibu kandung', 'r', HID)]},
+    {t: 'Identitas Ibu Kandung', show: alive('status_ibu'), f: P('ibu', 'ibu')},
+    {t: 'Data Wali Siswa', f: [f('wali', 'Status wali siswa', 'r', ['Sama dengan ayah kandung', 'Sama dengan ibu kandung', 'Lainnya'])]},
+    {t: 'Identitas Wali Siswa', show: d => d.wali === 'Lainnya', f: [f('nama_wali', 'Nama lengkap wali')].concat(P('wali', 'wali', 1))},
+    {t: 'Pondok Pesantren Al-Istiqomah', f: [yn('santri', 'Mendaftar sebagai santri Pon-Pes Al-Istiqomah?')]},
+    {t: 'Data TPQ/Madin/Ponpes Sebelumnya', show: d => d.santri === 'Iya', f: [f('tpq', 'Nama TPQ/Madin/Ponpes sebelumnya'), f('tpq_stat', 'Nomor statistik TPQ/Madin/Ponpes', 'n', 0, 1), f('tpq_alamat', 'Alamat TPQ/Madin/Ponpes sebelumnya (desa, kecamatan, kabupaten)')]},
+    {t: 'Riwayat Kesehatan', f: [yn('asma', 'Riwayat penyakit asma?'), yn('jantung', 'Riwayat penyakit jantung?'), yn('operasi', 'Pernah menjalani operasi?'), f('penyakit', 'Penyakit khusus (kosongkan jika tidak ada)', 'x', 0, 1), f('alergi', 'Alergi (kosongkan jika tidak ada)', 'x', 0, 1)]},
+    {t: 'Pernyataan & Persetujuan', f: [f('setuju', 'SETUJU – Saya bertanggung jawab bahwa data yang saya kirim adalah benar dan berlaku di muka hukum dan peraturan yang ada!', 'c')]}
+  ]};
+})();

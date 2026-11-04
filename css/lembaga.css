@@ -1,0 +1,14 @@
+/* Tambahan untuk halaman lembaga: sub menu, preview brosur, galeri, lightbox */
+.tp[hidden]{display:none}
+.pdf{width:100%;height:75vh;border:1px solid var(--line);border-radius:var(--r);margin-bottom:1rem;background:#fff}
+.brosur[data-zoom],.gal img{cursor:zoom-in}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.75rem}
+.gal figure{margin:0;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#eef2fb;position:relative}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.gal img:hover{transform:scale(1.06)}
+.gal figure.ph{border:2px dashed #9fb0d8}.gal figure.ph img{display:none}
+.gal figure.ph::after{content:"Foto belum tersedia";position:absolute;inset:0;display:grid;place-items:center;padding:.5rem;text-align:center;font-size:.8rem;font-weight:600;color:var(--muted)}
+#lb{max-width:min(980px,94vw);background:transparent;box-shadow:none;border-radius:0}
+#lb img{max-width:100%;max-height:82vh;margin:auto;border-radius:12px}
+#lb .btn{display:flex;margin:.75rem auto 0}
+.copy{padding:1.5rem 1rem}
